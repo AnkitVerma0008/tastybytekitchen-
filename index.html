@@ -1,1639 +1,873 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TastyByte Kitchen | Premium Cloud Kitchen · Kompally</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&family=Italiana&display=swap"
-    rel="stylesheet">
-  <style>
-    :root {
-      --gold: #C9A84C;
-      --gold-light: #E8CC7A;
-      --gold-dim: #7A621E;
-      --black: #080808;
-      --black-2: #0F0F0F;
-      --black-3: #161616;
-      --black-4: #1E1E1E;
-      --white: #FAF6EE;
-      --white-dim: #A89880;
-      --white-faint: #3A3228;
-      --red: #C0392B;
-      --green: #27AE60;
-    }
-
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--black);
-      color: var(--white);
-      overflow-x: hidden;
-      cursor: none;
-    }
-
-    /* CUSTOM CURSOR */
-    .cursor {
-      width: 10px;
-      height: 10px;
-      background: var(--gold);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 99999;
-      transform: translate(-50%, -50%);
-      transition: transform 0.1s;
-    }
-
-    .cursor-ring {
-      width: 36px;
-      height: 36px;
-      border: 1px solid rgba(201, 168, 76, 0.5);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 99998;
-      transform: translate(-50%, -50%);
-      transition: all 0.15s ease;
-    }
-
-    /* NOISE OVERLAY */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      opacity: 0.4;
-    }
-
-    /* NAV */
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 900;
-      padding: 0 6%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 76px;
-      background: rgba(8, 8, 8, 0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(201, 168, 76, 0.08);
-      transition: all 0.3s;
-    }
-
-    nav.scrolled {
-      background: rgba(8, 8, 8, 0.97);
-      border-bottom-color: rgba(201, 168, 76, 0.15);
-    }
-
-    .nav-logo {
-      font-family: 'Italiana', serif;
-      font-size: 1.6rem;
-      color: var(--white);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    .nav-logo em {
-      color: var(--gold);
-      font-style: normal;
-    }
-
-    .nav-center {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-    }
-
-    .nav-center a {
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: var(--white-dim);
-      transition: color 0.3s;
-      position: relative;
-    }
-
-    .nav-center a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: var(--gold);
-      transform: scaleX(0);
-      transition: transform 0.3s;
-    }
-
-    .nav-center a:hover {
-      color: var(--white);
-    }
-
-    .nav-center a:hover::after {
-      transform: scaleX(1);
-    }
-
-    .nav-cta {
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--black);
-      background: var(--gold);
-      padding: 10px 24px;
-      border-radius: 2px;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
-
-    .nav-cta:hover {
-      background: var(--gold-light);
-      transform: translateY(-1px);
-    }
-
-    /* NIGHT BANNER */
-    .night-banner {
-      position: fixed;
-      top: 76px;
-      width: 100%;
-      z-index: 899;
-      background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.08), rgba(201, 168, 76, 0.12), rgba(201, 168, 76, 0.08), transparent);
-      border-bottom: 1px solid rgba(201, 168, 76, 0.12);
-      padding: 8px;
-      text-align: center;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .night-banner .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--gold);
-      animation: pulse 2s infinite;
-    }
-
-    /* HERO */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 140px 6% 80px;
-      position: relative;
-      overflow: hidden;
-      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(201, 168, 76, 0.04) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(201, 168, 76, 0.03) 0%, transparent 60%);
-    }
-
-    .hero-bg-text {
-      position: absolute;
-      bottom: -2rem;
-      left: -1rem;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(8rem, 20vw, 18rem);
-      font-weight: 700;
-      color: rgba(201, 168, 76, 0.03);
-      white-space: nowrap;
-      user-select: none;
-      z-index: 0;
-      letter-spacing: -5px;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 680px;
-    }
-
-    .hero-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 2.5rem;
-      animation: fadeUp 0.7s ease both;
-    }
-
-    .eyebrow-line {
-      width: 40px;
-      height: 1px;
-      background: var(--gold);
-    }
-
-    .eyebrow-text {
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3.2rem, 7vw, 6.5rem);
-      font-weight: 600;
-      line-height: 1.0;
-      margin-bottom: 2rem;
-      animation: fadeUp 0.7s ease 0.15s both;
-    }
-
-    .hero h1 .thin {
-      font-weight: 400;
-      color: var(--white-dim);
-    }
-
-    .hero h1 .accent {
-      color: var(--gold);
-    }
-
-    .hero h1 .block {
-      display: block;
-    }
-
-    .hero-sub {
-      font-size: 1rem;
-      color: var(--white-dim);
-      line-height: 1.8;
-      max-width: 480px;
-      margin-bottom: 3rem;
-      font-weight: 300;
-      animation: fadeUp 0.7s ease 0.3s both;
-    }
-
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-      animation: fadeUp 0.7s ease 0.45s both;
-    }
-
-    .btn-gold {
-      background: var(--gold);
-      color: var(--black);
-      padding: 16px 36px;
-      border-radius: 2px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      text-decoration: none;
-      border: none;
-      cursor: none;
-      transition: all 0.3s;
-      display: inline-block;
-    }
-
-    .btn-gold:hover {
-      background: var(--gold-light);
-      transform: translateY(-2px);
-      box-shadow: 0 20px 40px rgba(201, 168, 76, 0.25);
-    }
-
-    .btn-ghost {
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--white-dim);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: color 0.3s;
-    }
-
-    .btn-ghost:hover {
-      color: var(--gold);
-    }
-
-    .btn-ghost .arrow {
-      transition: transform 0.3s;
-    }
-
-    .btn-ghost:hover .arrow {
-      transform: translateX(6px);
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 0;
-      margin-top: 5rem;
-      border-top: 1px solid rgba(201, 168, 76, 0.12);
-      padding-top: 2.5rem;
-      animation: fadeUp 0.7s ease 0.6s both;
-    }
-
-    .stat {
-      flex: 1;
-      padding-right: 2rem;
-      border-right: 1px solid rgba(201, 168, 76, 0.1);
-      margin-right: 2rem;
-    }
-
-    .stat:last-child {
-      border-right: none;
-      margin-right: 0;
-    }
-
-    .stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.8rem;
-      font-weight: 600;
-      color: var(--gold);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .stat-label {
-      font-size: 0.72rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--white-faint);
-    }
-
-    .hero-right {
-      position: absolute;
-      right: 6%;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
-      text-align: right;
-      animation: fadeUp 0.7s ease 0.3s both;
-    }
-
-    .hero-badge-circle {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      border: 1px solid rgba(201, 168, 76, 0.2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(201, 168, 76, 0.04);
-      animation: spin-slow 20s linear infinite;
-    }
-
-    .hero-badge-inner {
-      text-align: center;
-      animation: counter-spin 20s linear infinite;
-    }
-
-    .hero-badge-inner .big {
-      font-size: 3rem;
-    }
-
-    .hero-badge-inner p {
-      font-size: 0.65rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-top: 6px;
-    }
-
-    /* MARQUEE */
-    .marquee-section {
-      border-top: 1px solid rgba(201, 168, 76, 0.08);
-      border-bottom: 1px solid rgba(201, 168, 76, 0.08);
-      padding: 18px 0;
-      overflow: hidden;
-      background: var(--black-2);
-    }
-
-    .marquee-track {
-      display: flex;
-      gap: 0;
-      white-space: nowrap;
-      animation: marquee 25s linear infinite;
-    }
-
-    .marquee-item {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      padding: 0 2rem;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold-dim);
-    }
-
-    .marquee-item em {
-      color: var(--gold);
-      font-style: normal;
-      font-size: 1rem;
-    }
-
-    /* TIMING SECTION */
-    .timing-section {
-      padding: 80px 6%;
-      background: var(--black-2);
-      border-bottom: 1px solid rgba(201, 168, 76, 0.08);
-    }
-
-    .timing-inner {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 6rem;
-      align-items: center;
-    }
-
-    .timing-label {
-      font-size: 0.72rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1rem;
-    }
-
-    .timing-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 600;
-      line-height: 1.2;
-    }
-
-    .timing-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: rgba(201, 168, 76, 0.08);
-    }
-
-    .timing-card {
-      background: var(--black-2);
-      padding: 2rem 1.5rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: background 0.3s;
-    }
-
-    .timing-card:hover {
-      background: var(--black-3);
-    }
-
-    .timing-card.peak {
-      background: rgba(201, 168, 76, 0.06);
-      border: 1px solid rgba(201, 168, 76, 0.15);
-    }
-
-    .timing-icon {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .timing-period {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .timing-time {
-      font-size: 0.8rem;
-      color: var(--gold);
-      letter-spacing: 1px;
-      margin-bottom: 0.8rem;
-    }
-
-    .timing-desc {
-      font-size: 0.8rem;
-      color: var(--white-dim);
-      line-height: 1.6;
-    }
-
-    .timing-tag {
-      display: inline-block;
-      margin-top: 0.8rem;
-      font-size: 0.65rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 1px;
-    }
-
-    .timing-tag.peak-tag {
-      background: rgba(201, 168, 76, 0.15);
-      color: var(--gold);
-      border: 1px solid rgba(201, 168, 76, 0.3);
-    }
-
-    .timing-tag.off-tag {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--white-faint);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    /* MENU */
-    #menu {
-      padding: 100px 6%;
-      background: var(--black);
-    }
-
-    .section-header {
-      margin-bottom: 4rem;
-    }
-
-    .section-tag {
-      font-size: 0.72rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .section-tag::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(201, 168, 76, 0.15);
-      max-width: 80px;
-    }
-
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 600;
-      line-height: 1.1;
-    }
-
-    .filter-bar {
-      display: flex;
-      gap: 1px;
-      background: rgba(201, 168, 76, 0.08);
-      border-radius: 2px;
-      overflow: hidden;
-      width: fit-content;
-      margin-bottom: 3rem;
-    }
-
-    .filter-btn {
-      padding: 10px 22px;
-      background: transparent;
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--white-dim);
-      border: none;
-      cursor: none;
-      transition: all 0.3s;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    .filter-btn.active,
-    .filter-btn:hover {
-      background: var(--gold);
-      color: var(--black);
-    }
-
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1px;
-      background: rgba(201, 168, 76, 0.06);
-    }
-
-    .menu-card {
-      background: var(--black);
-      padding: 2rem;
-      transition: background 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .menu-card::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, var(--gold), transparent);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.4s ease;
-    }
-
-    .menu-card:hover {
-      background: var(--black-3);
-    }
-
-    .menu-card:hover::after {
-      transform: scaleX(1);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1.2rem;
-    }
-
-    .card-emoji-wrap {
-      width: 56px;
-      height: 56px;
-      border-radius: 2px;
-      background: rgba(201, 168, 76, 0.06);
-      border: 1px solid rgba(201, 168, 76, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-    }
-
-    .type-badge {
-      font-size: 0.62rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 1px;
-    }
-
-    .veg-b {
-      color: var(--green);
-      border: 1px solid rgba(39, 174, 96, 0.25);
-      background: rgba(39, 174, 96, 0.06);
-    }
-
-    .nveg-b {
-      color: #e74c3c;
-      border: 1px solid rgba(231, 76, 60, 0.25);
-      background: rgba(231, 76, 60, 0.06);
-    }
-
-    .card-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      line-height: 1.2;
-    }
-
-    .card-desc {
-      font-size: 0.82rem;
-      color: var(--white-dim);
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-
-    .card-foot {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .card-price {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--gold);
-      line-height: 1;
-    }
-
-    .card-price span {
-      font-size: 0.9rem;
-      color: var(--white-faint);
-      margin-right: 2px;
-    }
-
-    .add-card-btn {
-      width: 38px;
-      height: 38px;
-      border: 1px solid rgba(201, 168, 76, 0.3);
-      border-radius: 2px;
-      background: transparent;
-      color: var(--gold);
-      font-size: 1.2rem;
-      cursor: none;
-      transition: all 0.25s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .add-card-btn:hover {
-      background: var(--gold);
-      color: var(--black);
-      border-color: var(--gold);
-    }
-
-    /* ORDER */
-    #order {
-      padding: 100px 6%;
-      background: var(--black-2);
-      border-top: 1px solid rgba(201, 168, 76, 0.08);
-    }
-
-    .order-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      align-items: center;
-      margin-top: 3rem;
-    }
-
-    .order-left .order-tagline {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 600;
-      line-height: 1.2;
-      margin-bottom: 1.5rem;
-    }
-
-    .order-left p {
-      font-size: 0.9rem;
-      color: var(--white-dim);
-      line-height: 1.8;
-      margin-bottom: 2rem;
-    }
-
-    .order-detail {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.82rem;
-      color: var(--white-dim);
-      margin-bottom: 0.8rem;
-    }
-
-    .order-detail .dot-gold {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--gold);
-      flex-shrink: 0;
-    }
-
-    .order-platforms {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: rgba(201, 168, 76, 0.06);
-    }
-
-    .platform-card {
-      background: var(--black-2);
-      padding: 1.6rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      text-decoration: none;
-      cursor: none;
-      transition: background 0.3s;
-      group: true;
-    }
-
-    .platform-card:hover {
-      background: var(--black-3);
-    }
-
-    .platform-left {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-    }
-
-    .platform-icon {
-      font-size: 2rem;
-      width: 48px;
-      text-align: center;
-    }
-
-    .platform-name {
-      font-weight: 600;
-      font-size: 1rem;
-      color: var(--white);
-      margin-bottom: 3px;
-    }
-
-    .platform-sub {
-      font-size: 0.75rem;
-      color: var(--white-dim);
-      letter-spacing: 1px;
-    }
-
-    .platform-arrow {
-      font-size: 1rem;
-      color: var(--gold-dim);
-      transition: all 0.3s;
-      transform: translateX(0);
-    }
-
-    .platform-card:hover .platform-arrow {
-      transform: translateX(6px);
-      color: var(--gold);
-    }
-
-    /* ABOUT */
-    #about {
-      padding: 100px 6%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8rem;
-      align-items: center;
-    }
-
-    .about-visual-block {
-      position: relative;
-    }
-
-    .about-quote-box {
-      border: 1px solid rgba(201, 168, 76, 0.15);
-      padding: 3rem;
-      position: relative;
-      background: rgba(201, 168, 76, 0.02);
-    }
-
-    .about-quote-box::before {
-      content: '\201C';
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 8rem;
-      color: rgba(201, 168, 76, 0.1);
-      position: absolute;
-      top: -1rem;
-      left: 1.5rem;
-      line-height: 1;
-    }
-
-    .quote-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-weight: 400;
-      line-height: 1.6;
-      color: var(--white);
-      font-style: italic;
-      position: relative;
-      z-index: 1;
-    }
-
-    .quote-attr {
-      margin-top: 1.5rem;
-      font-size: 0.75rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    .about-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin-top: 2rem;
-    }
-
-    .about-tag {
-      font-size: 0.72rem;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 7px 16px;
-      border: 1px solid rgba(201, 168, 76, 0.15);
-      color: var(--white-dim);
-      transition: all 0.3s;
-    }
-
-    .about-tag:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    .about-content .section-tag {
-      margin-bottom: 1rem;
-    }
-
-    .about-p {
-      font-size: 0.95rem;
-      color: var(--white-dim);
-      line-height: 1.9;
-      margin-bottom: 1.2rem;
-      font-weight: 300;
-    }
-
-    .about-features {
-      margin-top: 2.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: rgba(201, 168, 76, 0.06);
-    }
-
-    .about-feat {
-      background: var(--black);
-      padding: 1.2rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      font-size: 0.85rem;
-      color: var(--white-dim);
-      transition: background 0.3s;
-    }
-
-    .about-feat:hover {
-      background: var(--black-3);
-    }
-
-    .feat-icon {
-      font-size: 1.2rem;
-      width: 28px;
-      flex-shrink: 0;
-    }
-
-    .feat-label {
-      font-weight: 500;
-      color: var(--white);
-    }
-
-    /* CONTACT */
-    #contact {
-      padding: 100px 6%;
-      background: var(--black-2);
-      border-top: 1px solid rgba(201, 168, 76, 0.08);
-    }
-
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      margin-top: 4rem;
-    }
-
-    .contact-info-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: rgba(201, 168, 76, 0.06);
-    }
-
-    .contact-row {
-      background: var(--black-2);
-      padding: 1.6rem 2rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 1.5rem;
-      transition: background 0.3s;
-    }
-
-    .contact-row:hover {
-      background: var(--black-3);
-    }
-
-    .c-icon {
-      font-size: 1.4rem;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .c-label {
-      font-size: 0.68rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 5px;
-    }
-
-    .c-val {
-      font-size: 0.9rem;
-      color: var(--white);
-      line-height: 1.6;
-    }
-
-    .contact-form-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .form-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .form-sub {
-      font-size: 0.85rem;
-      color: var(--white-dim);
-      margin-bottom: 1rem;
-    }
-
-    .f-input,
-    .f-textarea {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(201, 168, 76, 0.12);
-      color: var(--white);
-      padding: 14px 18px;
-      border-radius: 0;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-
-    .f-input:focus,
-    .f-textarea:focus {
-      border-color: rgba(201, 168, 76, 0.4);
-    }
-
-    .f-input::placeholder,
-    .f-textarea::placeholder {
-      color: var(--white-faint);
-    }
-
-    .f-textarea {
-      resize: vertical;
-      min-height: 110px;
-    }
-
-    /* FOOTER */
-    footer {
-      background: var(--black);
-      padding: 3rem 6%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      border-top: 1px solid rgba(201, 168, 76, 0.08);
-    }
-
-    .footer-logo {
-      font-family: 'Italiana', serif;
-      font-size: 1.4rem;
-      letter-spacing: 3px;
-      color: var(--white-dim);
-    }
-
-    .footer-copy {
-      font-size: 0.75rem;
-      color: var(--white-faint);
-      letter-spacing: 1px;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 2rem;
-    }
-
-    .footer-links a {
-      font-size: 0.72rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--white-faint);
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-
-    .footer-links a:hover {
-      color: var(--gold);
-    }
-
-    /* TOAST */
-    .toast {
-      position: fixed;
-      bottom: 2.5rem;
-      right: 2.5rem;
-      z-index: 9999;
-      background: var(--black-3);
-      border: 1px solid rgba(201, 168, 76, 0.3);
-      color: var(--white);
-      padding: 1rem 1.5rem;
-      border-radius: 2px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(201, 168, 76, 0.1);
-      animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      max-width: 320px;
-    }
-
-    .toast .t-gold {
-      color: var(--gold);
-      font-weight: 700;
-    }
-
-    /* ANIMATIONS */
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(24px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes marquee {
-      from {
-        transform: translateX(0);
-      }
-
-      to {
-        transform: translateX(-50%);
-      }
-    }
-
-    @keyframes spin-slow {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes counter-spin {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(-360deg);
-      }
-    }
-
-    @keyframes toastIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.95);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-
-      50% {
-        opacity: 0.5;
-        transform: scale(0.8);
-      }
-    }
-
-    /* SCROLL REVEAL */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-
-      #about,
-      .order-grid,
-      .contact-grid,
-      .timing-inner {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-      }
-
-      .hero-right {
-        display: none;
-      }
-
-      .nav-center {
-        display: none;
-      }
-
-      .timing-cards {
-        grid-template-columns: 1fr;
-      }
-
-      body {
-        cursor: auto;
-      }
-
-      .cursor,
-      .cursor-ring {
-        display: none;
-      }
-
-      .hero {
-        padding-top: 120px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TastyByte Kitchen | Premium Cloud Kitchen · Kompally</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&family=Italiana&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8CC7A;
+  --gold-dim: #7A621E;
+  --black: #080808;
+  --black-2: #0F0F0F;
+  --black-3: #161616;
+  --black-4: #1E1E1E;
+  --white: #FAF6EE;
+  --white-dim: #A89880;
+  --white-faint: #3A3228;
+  --red: #C0392B;
+  --green: #27AE60;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CUSTOM CURSOR */
+.cursor {
+  width: 10px; height: 10px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed; pointer-events: none; z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s;
+}
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(201,168,76,0.5);
+  border-radius: 50%;
+  position: fixed; pointer-events: none; z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: all 0.15s ease;
+}
+
+/* NOISE OVERLAY */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 900;
+  padding: 0 6%;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 76px;
+  background: rgba(8,8,8,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+  transition: all 0.3s;
+}
+nav.scrolled { background: rgba(8,8,8,0.97); border-bottom-color: rgba(201,168,76,0.15); }
+
+.nav-logo {
+  font-family: 'Italiana', serif;
+  font-size: 1.6rem;
+  color: var(--white);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.nav-logo em { color: var(--gold); font-style: normal; }
+
+.nav-center { display: flex; gap: 2.5rem; list-style: none; }
+.nav-center a {
+  font-size: 0.78rem; font-weight: 500; letter-spacing: 2.5px;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--white-dim); transition: color 0.3s; position: relative;
+}
+.nav-center a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 1px; background: var(--gold);
+  transform: scaleX(0); transition: transform 0.3s;
+}
+.nav-center a:hover { color: var(--white); }
+.nav-center a:hover::after { transform: scaleX(1); }
+
+.nav-cta {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--black); background: var(--gold);
+  padding: 10px 24px; border-radius: 2px; text-decoration: none;
+  transition: all 0.3s;
+}
+.nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* NIGHT BANNER */
+.night-banner {
+  position: fixed; top: 76px; width: 100%; z-index: 899;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.08), rgba(201,168,76,0.12), rgba(201,168,76,0.08), transparent);
+  border-bottom: 1px solid rgba(201,168,76,0.12);
+  padding: 8px;
+  text-align: center;
+  font-size: 0.72rem; font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold);
+  display: flex; align-items: center; justify-content: center; gap: 1rem;
+}
+.night-banner .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 140px 6% 80px;
+  position: relative; overflow: hidden;
+  background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(201,168,76,0.04) 0%, transparent 70%),
+              radial-gradient(ellipse 60% 80% at 80% 20%, rgba(201,168,76,0.03) 0%, transparent 60%);
+}
+
+.hero-bg-text {
+  position: absolute; bottom: -2rem; left: -1rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(8rem, 20vw, 18rem);
+  font-weight: 700; color: rgba(201,168,76,0.03);
+  white-space: nowrap; user-select: none; z-index: 0;
+  letter-spacing: -5px;
+}
+
+.hero-content { position: relative; z-index: 2; max-width: 680px; }
+
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 2.5rem;
+  animation: fadeUp 0.7s ease both;
+}
+.eyebrow-line { width: 40px; height: 1px; background: var(--gold); }
+.eyebrow-text {
+  font-size: 0.72rem; font-weight: 500; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold);
+}
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.2rem, 7vw, 6.5rem);
+  font-weight: 600; line-height: 1.0; margin-bottom: 2rem;
+  animation: fadeUp 0.7s ease 0.15s both;
+}
+.hero h1 .thin { font-weight: 400; color: var(--white-dim); }
+.hero h1 .accent { color: var(--gold); }
+.hero h1 .block { display: block; }
+
+.hero-sub {
+  font-size: 1rem; color: var(--white-dim); line-height: 1.8; max-width: 480px;
+  margin-bottom: 3rem; font-weight: 300;
+  animation: fadeUp 0.7s ease 0.3s both;
+}
+
+.hero-actions {
+  display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+  animation: fadeUp 0.7s ease 0.45s both;
+}
+.btn-gold {
+  background: var(--gold); color: var(--black);
+  padding: 16px 36px; border-radius: 2px;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  text-decoration: none; border: none; cursor: none;
+  transition: all 0.3s; display: inline-block;
+}
+.btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 20px 40px rgba(201,168,76,0.25); }
+.btn-ghost {
+  font-size: 0.8rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--white-dim); text-decoration: none; display: flex; align-items: center; gap: 10px;
+  transition: color 0.3s;
+}
+.btn-ghost:hover { color: var(--gold); }
+.btn-ghost .arrow { transition: transform 0.3s; }
+.btn-ghost:hover .arrow { transform: translateX(6px); }
+
+.hero-stats {
+  display: flex; gap: 0; margin-top: 5rem;
+  border-top: 1px solid rgba(201,168,76,0.12);
+  padding-top: 2.5rem;
+  animation: fadeUp 0.7s ease 0.6s both;
+}
+.stat { flex: 1; padding-right: 2rem; border-right: 1px solid rgba(201,168,76,0.1); margin-right: 2rem; }
+.stat:last-child { border-right: none; margin-right: 0; }
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; font-weight: 600; color: var(--gold); line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label { font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--white-faint); }
+
+.hero-right {
+  position: absolute; right: 6%; top: 50%; transform: translateY(-50%);
+  z-index: 2; text-align: right;
+  animation: fadeUp 0.7s ease 0.3s both;
+}
+.hero-badge-circle {
+  width: 180px; height: 180px; border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(201,168,76,0.04);
+  animation: spin-slow 20s linear infinite;
+}
+.hero-badge-inner { text-align: center; animation: counter-spin 20s linear infinite; }
+.hero-badge-inner .big { font-size: 3rem; }
+.hero-badge-inner p { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-top: 6px; }
+
+/* MARQUEE */
+.marquee-section {
+  border-top: 1px solid rgba(201,168,76,0.08);
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+  padding: 18px 0; overflow: hidden; background: var(--black-2);
+}
+.marquee-track {
+  display: flex; gap: 0; white-space: nowrap;
+  animation: marquee 25s linear infinite;
+}
+.marquee-item {
+  display: flex; align-items: center; gap: 1.5rem; padding: 0 2rem;
+  font-size: 0.72rem; font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold-dim);
+}
+.marquee-item em { color: var(--gold); font-style: normal; font-size: 1rem; }
+
+/* TIMING SECTION */
+.timing-section {
+  padding: 80px 6%;
+  background: var(--black-2);
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+}
+.timing-inner {
+  display: grid; grid-template-columns: 1fr 2fr; gap: 6rem; align-items: center;
+}
+.timing-label { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+.timing-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 600; line-height: 1.2;
+}
+.timing-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(201,168,76,0.08); }
+.timing-card {
+  background: var(--black-2); padding: 2rem 1.5rem;
+  text-align: center; position: relative; overflow: hidden;
+  transition: background 0.3s;
+}
+.timing-card:hover { background: var(--black-3); }
+.timing-card.peak {
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.15);
+}
+.timing-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+.timing-period {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem;
+}
+.timing-time { font-size: 0.8rem; color: var(--gold); letter-spacing: 1px; margin-bottom: 0.8rem; }
+.timing-desc { font-size: 0.8rem; color: var(--white-dim); line-height: 1.6; }
+.timing-tag {
+  display: inline-block; margin-top: 0.8rem;
+  font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 1px;
+}
+.timing-tag.peak-tag { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+.timing-tag.off-tag { background: rgba(255,255,255,0.04); color: var(--white-faint); border: 1px solid rgba(255,255,255,0.06); }
+
+/* MENU */
+#menu { padding: 100px 6%; background: var(--black); }
+.section-header { margin-bottom: 4rem; }
+.section-tag { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: 12px; }
+.section-tag::after { content: ''; flex: 1; height: 1px; background: rgba(201,168,76,0.15); max-width: 80px; }
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 600; line-height: 1.1;
+}
+
+.filter-bar {
+  display: flex; gap: 1px; background: rgba(201,168,76,0.08); border-radius: 2px;
+  overflow: hidden; width: fit-content; margin-bottom: 3rem;
+}
+.filter-btn {
+  padding: 10px 22px; background: transparent;
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--white-dim); border: none; cursor: none;
+  transition: all 0.3s; font-family: 'Outfit', sans-serif;
+}
+.filter-btn.active, .filter-btn:hover { background: var(--gold); color: var(--black); }
+
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1px; background: rgba(201,168,76,0.06); }
+.menu-card {
+  background: var(--black); padding: 2rem;
+  transition: background 0.3s; position: relative; overflow: hidden;
+}
+.menu-card::after {
+  content: ''; position: absolute; left: 0; bottom: 0;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.menu-card:hover { background: var(--black-3); }
+.menu-card:hover::after { transform: scaleX(1); }
+
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.2rem; }
+.card-emoji-wrap {
+  width: 56px; height: 56px; border-radius: 2px;
+  background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+}
+.type-badge {
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 1px;
+}
+.veg-b { color: var(--green); border: 1px solid rgba(39,174,96,0.25); background: rgba(39,174,96,0.06); }
+.nveg-b { color: #e74c3c; border: 1px solid rgba(231,76,60,0.25); background: rgba(231,76,60,0.06); }
+
+.card-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.2;
+}
+.card-desc { font-size: 0.82rem; color: var(--white-dim); line-height: 1.6; margin-bottom: 1.5rem; }
+.card-foot { display: flex; align-items: center; justify-content: space-between; }
+.card-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; font-weight: 600; color: var(--gold); line-height: 1;
+}
+.card-price span { font-size: 0.9rem; color: var(--white-faint); margin-right: 2px; }
+.add-card-btn {
+  width: 38px; height: 38px;
+  border: 1px solid rgba(201,168,76,0.3); border-radius: 2px;
+  background: transparent; color: var(--gold);
+  font-size: 1.2rem; cursor: none; transition: all 0.25s;
+  display: flex; align-items: center; justify-content: center;
+}
+.add-card-btn:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+/* ORDER */
+#order {
+  padding: 100px 6%;
+  background: var(--black-2);
+  border-top: 1px solid rgba(201,168,76,0.08);
+}
+.order-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; margin-top: 3rem; }
+.order-left .order-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 600; line-height: 1.2; margin-bottom: 1.5rem;
+}
+.order-left p { font-size: 0.9rem; color: var(--white-dim); line-height: 1.8; margin-bottom: 2rem; }
+.order-detail { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--white-dim); margin-bottom: 0.8rem; }
+.order-detail .dot-gold { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+
+.order-platforms { display: flex; flex-direction: column; gap: 1px; background: rgba(201,168,76,0.06); }
+.platform-card {
+  background: var(--black-2); padding: 1.6rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  text-decoration: none; cursor: none; transition: background 0.3s; group: true;
+}
+.platform-card:hover { background: var(--black-3); }
+.platform-left { display: flex; align-items: center; gap: 1.2rem; }
+.platform-icon { font-size: 2rem; width: 48px; text-align: center; }
+.platform-name { font-weight: 600; font-size: 1rem; color: var(--white); margin-bottom: 3px; }
+.platform-sub { font-size: 0.75rem; color: var(--white-dim); letter-spacing: 1px; }
+.platform-arrow {
+  font-size: 1rem; color: var(--gold-dim);
+  transition: all 0.3s; transform: translateX(0);
+}
+.platform-card:hover .platform-arrow { transform: translateX(6px); color: var(--gold); }
+
+/* ABOUT */
+#about {
+  padding: 100px 6%;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: center;
+}
+.about-visual-block { position: relative; }
+.about-quote-box {
+  border: 1px solid rgba(201,168,76,0.15);
+  padding: 3rem; position: relative;
+  background: rgba(201,168,76,0.02);
+}
+.about-quote-box::before {
+  content: '\201C';
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 8rem; color: rgba(201,168,76,0.1);
+  position: absolute; top: -1rem; left: 1.5rem; line-height: 1;
+}
+.quote-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 400; line-height: 1.6;
+  color: var(--white); font-style: italic; position: relative; z-index: 1;
+}
+.quote-attr { margin-top: 1.5rem; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+.about-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
+.about-tag {
+  font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 7px 16px; border: 1px solid rgba(201,168,76,0.15);
+  color: var(--white-dim); transition: all 0.3s;
+}
+.about-tag:hover { border-color: var(--gold); color: var(--gold); }
+
+.about-content .section-tag { margin-bottom: 1rem; }
+.about-p { font-size: 0.95rem; color: var(--white-dim); line-height: 1.9; margin-bottom: 1.2rem; font-weight: 300; }
+.about-features { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1px; background: rgba(201,168,76,0.06); }
+.about-feat {
+  background: var(--black); padding: 1.2rem 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
+  font-size: 0.85rem; color: var(--white-dim);
+  transition: background 0.3s;
+}
+.about-feat:hover { background: var(--black-3); }
+.feat-icon { font-size: 1.2rem; width: 28px; flex-shrink: 0; }
+.feat-label { font-weight: 500; color: var(--white); }
+
+/* CONTACT */
+#contact {
+  padding: 100px 6%;
+  background: var(--black-2);
+  border-top: 1px solid rgba(201,168,76,0.08);
+}
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; margin-top: 4rem; }
+.contact-info-list { display: flex; flex-direction: column; gap: 1px; background: rgba(201,168,76,0.06); }
+.contact-row {
+  background: var(--black-2); padding: 1.6rem 2rem;
+  display: flex; align-items: flex-start; gap: 1.5rem;
+  transition: background 0.3s;
+}
+.contact-row:hover { background: var(--black-3); }
+.c-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+.c-label { font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+.c-val { font-size: 0.9rem; color: var(--white); line-height: 1.6; }
+
+.contact-form-wrap { display: flex; flex-direction: column; gap: 1rem; }
+.form-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; margin-bottom: 0.5rem; }
+.form-sub { font-size: 0.85rem; color: var(--white-dim); margin-bottom: 1rem; }
+.f-input, .f-textarea {
+  width: 100%; background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(201,168,76,0.12);
+  color: var(--white); padding: 14px 18px; border-radius: 0;
+  font-family: 'Outfit', sans-serif; font-size: 0.9rem; outline: none;
+  transition: border-color 0.3s;
+}
+.f-input:focus, .f-textarea:focus { border-color: rgba(201,168,76,0.4); }
+.f-input::placeholder, .f-textarea::placeholder { color: var(--white-faint); }
+.f-textarea { resize: vertical; min-height: 110px; }
+
+/* FOOTER */
+footer {
+  background: var(--black); padding: 3rem 6%;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+  border-top: 1px solid rgba(201,168,76,0.08);
+}
+.footer-logo { font-family: 'Italiana', serif; font-size: 1.4rem; letter-spacing: 3px; color: var(--white-dim); }
+.footer-copy { font-size: 0.75rem; color: var(--white-faint); letter-spacing: 1px; }
+.footer-links { display: flex; gap: 2rem; }
+.footer-links a { font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--white-faint); text-decoration: none; transition: color 0.3s; }
+.footer-links a:hover { color: var(--gold); }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 2.5rem; right: 2.5rem; z-index: 9999;
+  background: var(--black-3); border: 1px solid rgba(201,168,76,0.3);
+  color: var(--white); padding: 1rem 1.5rem; border-radius: 2px;
+  font-size: 0.85rem; font-weight: 500;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,168,76,0.1);
+  animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1);
+  display: flex; align-items: center; gap: 10px; max-width: 320px;
+}
+.toast .t-gold { color: var(--gold); font-weight: 700; }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes counter-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* SCROLL REVEAL */
+.reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  #about, .order-grid, .contact-grid, .timing-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .hero-right { display: none; }
+  .nav-center { display: none; }
+  .timing-cards { grid-template-columns: 1fr; }
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+  .hero { padding-top: 120px; }
+}
+</style>
 </head>
-
 <body>
 
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-  <!-- NAV -->
-  <nav id="mainNav">
-    <div class="nav-logo">TastyByte<em>.</em></div>
-    <ul class="nav-center">
-      <li><a href="#about">Our Story</a></li>
-      <li><a href="#menu">Menu</a></li>
-      <li><a href="#order">Order</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <a href="#order" class="nav-cta">Order Now</a>
-  </nav>
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo">TastyByte<em>.</em></div>
+  <ul class="nav-center">
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#order">Order</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#order" class="nav-cta">Order Now</a>
+</nav>
 
-  <!-- NIGHT BANNER -->
-  <div class="night-banner">
-    <span class="dot"></span>
-    Kitchen is Open &nbsp;·&nbsp; Dinner Hours Now Active &nbsp;·&nbsp; Fastest Delivery in the Evening
-    <span class="dot"></span>
-  </div>
+<!-- NIGHT BANNER -->
+<div class="night-banner">
+  <span class="dot"></span>
+  Kitchen is Open &nbsp;·&nbsp; Dinner Hours Now Active &nbsp;·&nbsp; Fastest Delivery in the Evening
+  <span class="dot"></span>
+</div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-bg-text">TASTYBYTE</div>
-    <div class="hero-content">
-      <div class="hero-eyebrow">
-        <div class="eyebrow-line"></div>
-        <div class="eyebrow-text">Premium Cloud Kitchen · Kompally, Hyderabad</div>
-      </div>
-      <h1>
-        <span class="block thin">Authentic Flavors</span>
-        <span class="block accent">Delivered</span>
-        <span class="block thin">After Dark</span>
-      </h1>
-      <p class="hero-sub">Bihar's soul food, South India's comfort classics, and bold Indo-Chinese starters — all
-        prepared fresh, every single order, delivered hot to your door.</p>
-      <div class="hero-actions">
-        <a href="#menu" class="btn-gold">Explore Menu</a>
-        <a href="#order" class="btn-ghost">Order Now <span class="arrow">→</span></a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat">
-          <div class="stat-num">500+</div>
-          <div class="stat-label">Happy Customers</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">30<small style="font-size:1.2rem">min</small></div>
-          <div class="stat-label">Avg Delivery</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">4.8★</div>
-          <div class="stat-label">Customer Rating</div>
-        </div>
-      </div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">TASTYBYTE</div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-line"></div>
+      <div class="eyebrow-text">Premium Cloud Kitchen · Kompally, Hyderabad</div>
     </div>
-    <div class="hero-right">
-      <div class="hero-badge-circle">
-        <div class="hero-badge-inner">
-          <div class="big">🍛</div>
-          <p>Fresh · Hot · Now</p>
-        </div>
-      </div>
+    <h1>
+      <span class="block thin">Authentic Flavors</span>
+      <span class="block accent">Delivered</span>
+      <span class="block thin">After Dark</span>
+    </h1>
+    <p class="hero-sub">Bihar's soul food, South India's comfort classics, and bold Indo-Chinese starters — all prepared fresh, every single order, delivered hot to your door.</p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-gold">Explore Menu</a>
+      <a href="#order" class="btn-ghost">Order Now <span class="arrow">→</span></a>
     </div>
-  </section>
-
-  <!-- MARQUEE -->
-  <div class="marquee-section">
-    <div class="marquee-track">
-      <div class="marquee-item"><em>🥘</em> Litti Chokha</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🍗</em> Chicken Schezwan Rice</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🍛</em> Dal Baati</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🫓</em> Masala Dosa</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🦴</em> Chicken Lollipop</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🧆</em> Paneer Tikka</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🌯</em> Kathi Roll</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🥘</em> Litti Chokha</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🍗</em> Chicken Schezwan Rice</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🍛</em> Dal Baati</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🫓</em> Masala Dosa</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🦴</em> Chicken Lollipop</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🧆</em> Paneer Tikka</div>
-      <div class="marquee-item">·</div>
-      <div class="marquee-item"><em>🌯</em> Kathi Roll</div>
-      <div class="marquee-item">·</div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Happy Customers</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">30<small style="font-size:1.2rem">min</small></div>
+        <div class="stat-label">Avg Delivery</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4.8★</div>
+        <div class="stat-label">Customer Rating</div>
+      </div>
     </div>
   </div>
+  <div class="hero-right">
+    <div class="hero-badge-circle">
+      <div class="hero-badge-inner">
+        <div class="big">🍛</div>
+        <p>Fresh · Hot · Now</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <!-- TIMING SECTION -->
-  <section class="timing-section reveal">
-    <div class="timing-inner">
-      <div>
-        <div class="timing-label">When We Shine</div>
-        <h2 class="timing-title">Every Craving,<br>Every Hour</h2>
-      </div>
-      <div class="timing-cards">
-        <div class="timing-card">
-          <div class="timing-icon">🌅</div>
-          <div class="timing-period">Morning</div>
-          <div class="timing-time">11:00 AM – 2:00 PM</div>
-          <div class="timing-desc">Light meals, dosa, curd rice & quick bites to start your afternoon right.</div>
-          <div class="timing-tag off-tag">Moderate Traffic</div>
-        </div>
-        <div class="timing-card">
-          <div class="timing-icon">☀️</div>
-          <div class="timing-period">Afternoon</div>
-          <div class="timing-time">2:00 PM – 6:00 PM</div>
-          <div class="timing-desc">Full lunch thalis, North Indian mains & rice bowls at their freshest.</div>
-          <div class="timing-tag off-tag">Good Availability</div>
-        </div>
-        <div class="timing-card peak">
-          <div class="timing-icon">🌙</div>
-          <div class="timing-period">Evening & Night</div>
-          <div class="timing-time">6:00 PM – 10:30 PM</div>
-          <div class="timing-desc">Peak hours — starters, dinner specials, Schezwan dishes. This is when the magic
-            happens.</div>
-          <div class="timing-tag peak-tag">⭐ Peak Hours</div>
-        </div>
-      </div>
-    </div>
-  </section>
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item"><em>🥘</em> Litti Chokha</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🍗</em> Chicken Schezwan Rice</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🍛</em> Dal Baati</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🫓</em> Masala Dosa</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🦴</em> Chicken Lollipop</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🧆</em> Paneer Tikka</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🌯</em> Kathi Roll</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🥘</em> Litti Chokha</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🍗</em> Chicken Schezwan Rice</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🍛</em> Dal Baati</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🫓</em> Masala Dosa</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🦴</em> Chicken Lollipop</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🧆</em> Paneer Tikka</div>
+    <div class="marquee-item">·</div>
+    <div class="marquee-item"><em>🌯</em> Kathi Roll</div>
+    <div class="marquee-item">·</div>
+  </div>
+</div>
 
-  <!-- MENU -->
-  <section id="menu">
-    <div class="section-header reveal">
-      <div class="section-tag">What We Serve</div>
-      <h2 class="section-title">Our Menu</h2>
+<!-- TIMING SECTION -->
+<section class="timing-section reveal">
+  <div class="timing-inner">
+    <div>
+      <div class="timing-label">When We Shine</div>
+      <h2 class="timing-title">Every Craving,<br>Every Hour</h2>
     </div>
-    <div class="filter-bar reveal">
-      <button class="filter-btn active" onclick="filterMenu('all', this)">All</button>
-      <button class="filter-btn" onclick="filterMenu('north', this)">North Indian</button>
-      <button class="filter-btn" onclick="filterMenu('south', this)">South Indian</button>
-      <button class="filter-btn" onclick="filterMenu('starter', this)">Starters</button>
-      <button class="filter-btn" onclick="filterMenu('fast', this)">Fast Food</button>
+    <div class="timing-cards">
+      <div class="timing-card">
+        <div class="timing-icon">🌅</div>
+        <div class="timing-period">Morning</div>
+        <div class="timing-time">11:00 AM – 2:00 PM</div>
+        <div class="timing-desc">Light meals, dosa, curd rice & quick bites to start your afternoon right.</div>
+        <div class="timing-tag off-tag">Moderate Traffic</div>
+      </div>
+      <div class="timing-card">
+        <div class="timing-icon">☀️</div>
+        <div class="timing-period">Afternoon</div>
+        <div class="timing-time">2:00 PM – 6:00 PM</div>
+        <div class="timing-desc">Full lunch thalis, North Indian mains & rice bowls at their freshest.</div>
+        <div class="timing-tag off-tag">Good Availability</div>
+      </div>
+      <div class="timing-card peak">
+        <div class="timing-icon">🌙</div>
+        <div class="timing-period">Evening & Night</div>
+        <div class="timing-time">6:00 PM – 10:30 PM</div>
+        <div class="timing-desc">Peak hours — starters, dinner specials, Schezwan dishes. This is when the magic happens.</div>
+        <div class="timing-tag peak-tag">⭐ Peak Hours</div>
+      </div>
     </div>
-    <div class="menu-grid" id="menuGrid"></div>
-  </section>
+  </div>
+</section>
 
-  <!-- ORDER -->
-  <section id="order">
-    <div class="section-header reveal">
-      <div class="section-tag">Place Your Order</div>
-      <h2 class="section-title">Order Now</h2>
-    </div>
-    <div class="order-grid">
-      <div class="order-left reveal">
-        <p class="order-tagline">Hot food at your door in <em style="color:var(--gold);font-style:normal;">30
-            minutes</em> or less.</p>
-        <p>Call us directly, WhatsApp your order, or use Swiggy & Zomato. We prepare everything fresh after your order —
-          no pre-cooked stock, ever.</p>
-        <div style="margin-top:1.5rem;">
-          <div class="order-detail"><span class="dot-gold"></span> Minimum Order: ₹149</div>
-          <div class="order-detail"><span class="dot-gold"></span> Free Delivery above ₹299</div>
-          <div class="order-detail"><span class="dot-gold"></span> Open Daily: 11:00 AM – 10:30 PM</div>
-          <div class="order-detail"><span class="dot-gold"></span> WhatsApp orders accepted</div>
-        </div>
-      </div>
-      <div class="order-platforms reveal">
-        <a href="tel:+919876543210" class="platform-card">
-          <div class="platform-left">
-            <div class="platform-icon">📞</div>
-            <div>
-              <div class="platform-name">Call Directly</div>
-              <div class="platform-sub">+91 98765 43210</div>
-            </div>
-          </div>
-          <div class="platform-arrow">→</div>
-        </a>
-        <a href="https://wa.me/919876543210" class="platform-card">
-          <div class="platform-left">
-            <div class="platform-icon">💬</div>
-            <div>
-              <div class="platform-name">WhatsApp Order</div>
-              <div class="platform-sub">Fastest response guaranteed</div>
-            </div>
-          </div>
-          <div class="platform-arrow">→</div>
-        </a>
-        <a href="#" class="platform-card">
-          <div class="platform-left">
-            <div class="platform-icon">🟠</div>
-            <div>
-              <div class="platform-name">Order on Swiggy</div>
-              <div class="platform-sub">Track your delivery live</div>
-            </div>
-          </div>
-          <div class="platform-arrow">→</div>
-        </a>
-        <a href="#" class="platform-card">
-          <div class="platform-left">
-            <div class="platform-icon">🔴</div>
-            <div>
-              <div class="platform-name">Order on Zomato</div>
-              <div class="platform-sub">Rated 4.8 ★ on Zomato</div>
-            </div>
-          </div>
-          <div class="platform-arrow">→</div>
-        </a>
-      </div>
-    </div>
-  </section>
+<!-- MENU -->
+<section id="menu">
+  <div class="section-header reveal">
+    <div class="section-tag">What We Serve</div>
+    <h2 class="section-title">Our Menu</h2>
+  </div>
+  <div class="filter-bar reveal">
+    <button class="filter-btn active" onclick="filterMenu('all', this)">All</button>
+    <button class="filter-btn" onclick="filterMenu('north', this)">North Indian</button>
+    <button class="filter-btn" onclick="filterMenu('south', this)">South Indian</button>
+    <button class="filter-btn" onclick="filterMenu('starter', this)">Starters</button>
+    <button class="filter-btn" onclick="filterMenu('fast', this)">Fast Food</button>
+  </div>
+  <div class="menu-grid" id="menuGrid"></div>
+</section>
 
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="about-visual-block reveal">
-      <div class="about-quote-box">
-        <p class="quote-text">"Every dish we make carries the memory of a home-cooked meal. The spices, the technique,
-          the care — it's all genuine."</p>
-        <div class="quote-attr">— TastyByte Kitchen</div>
-      </div>
-      <div class="about-tags">
-        <div class="about-tag">Bihar Authentic</div>
-        <div class="about-tag">South Indian</div>
-        <div class="about-tag">Indo-Chinese</div>
-        <div class="about-tag">Fresh Daily</div>
-        <div class="about-tag">No Preservatives</div>
-        <div class="about-tag">Made to Order</div>
-      </div>
-    </div>
-    <div class="about-content reveal">
-      <div class="section-tag">Our Story</div>
-      <h2 class="section-title" style="margin-bottom:2rem;">Cooked with<br>Intention</h2>
-      <p class="about-p">TastyByte Kitchen was born from a simple belief — that people away from home deserve food that
-        actually tastes like home. Based in Kompally, Hyderabad, we bridge the gap between North Indian soul food and
-        South Indian comfort dishes.</p>
-      <p class="about-p">We serve everything from Bihar's beloved Litti Chokha and rich Dal Baati to crispy Masala Dosa,
-        fiery Chicken Schezwan Rice, and indulgent starters. Every item is prepared fresh when you order — no shortcuts.
-      </p>
-      <div class="about-features">
-        <div class="about-feat"><span class="feat-icon">🌿</span>
-          <div><span class="feat-label">Fresh Ingredients Only</span> — sourced daily</div>
-        </div>
-        <div class="about-feat"><span class="feat-icon">🔥</span>
-          <div><span class="feat-label">Authentic Spice Blends</span> — no shortcuts</div>
-        </div>
-        <div class="about-feat"><span class="feat-icon">🛵</span>
-          <div><span class="feat-label">30-Minute Delivery</span> — hot & on time</div>
-        </div>
-        <div class="about-feat"><span class="feat-icon">📦</span>
-          <div><span class="feat-label">Made to Order</span> — never pre-cooked</div>
-        </div>
+<!-- ORDER -->
+<section id="order">
+  <div class="section-header reveal">
+    <div class="section-tag">Place Your Order</div>
+    <h2 class="section-title">Order Now</h2>
+  </div>
+  <div class="order-grid">
+    <div class="order-left reveal">
+      <p class="order-tagline">Hot food at your door in <em style="color:var(--gold);font-style:normal;">30 minutes</em> or less.</p>
+      <p>Call us directly, WhatsApp your order, or use Swiggy & Zomato. We prepare everything fresh after your order — no pre-cooked stock, ever.</p>
+      <div style="margin-top:1.5rem;">
+        <div class="order-detail"><span class="dot-gold"></span> Minimum Order: ₹149</div>
+        <div class="order-detail"><span class="dot-gold"></span> Free Delivery above ₹299</div>
+        <div class="order-detail"><span class="dot-gold"></span> Open Daily: 11:00 AM – 10:30 PM</div>
+        <div class="order-detail"><span class="dot-gold"></span> WhatsApp orders accepted</div>
       </div>
     </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="section-header reveal">
-      <div class="section-tag">Reach Us</div>
-      <h2 class="section-title">Contact</h2>
-    </div>
-    <div class="contact-grid">
-      <div class="contact-info-list reveal">
-        <div class="contact-row">
-          <span class="c-icon">📍</span>
+    <div class="order-platforms reveal">
+      <a href="tel:+918019227970" class="platform-card">
+        <div class="platform-left">
+          <div class="platform-icon">📞</div>
           <div>
-            <div class="c-label">Location</div>
-            <div class="c-val">TastyByte Kitchen, Kompally,<br>Hyderabad, Telangana – 500014</div>
+            <div class="platform-name">Call Directly</div>
+            <div class="platform-sub">+91 80192 27970</div>
           </div>
         </div>
-        <div class="contact-row">
-          <span class="c-icon">📞</span>
+        <div class="platform-arrow">→</div>
+      </a>
+      <a href="https://wa.me/918019227970" class="platform-card">
+        <div class="platform-left">
+          <div class="platform-icon">💬</div>
           <div>
-            <div class="c-label">Phone & WhatsApp</div>
-            <div class="c-val">+91 98765 43210</div>
+            <div class="platform-name">WhatsApp Order</div>
+            <div class="platform-sub">Fastest response guaranteed</div>
           </div>
         </div>
-        <div class="contact-row">
-          <span class="c-icon">📧</span>
+        <div class="platform-arrow">→</div>
+      </a>
+      <a href="#" class="platform-card">
+        <div class="platform-left">
+          <div class="platform-icon">🟠</div>
           <div>
-            <div class="c-label">Email</div>
-            <div class="c-val">hello@tastybytekitchen.in</div>
+            <div class="platform-name">Order on Swiggy</div>
+            <div class="platform-sub">Track your delivery live</div>
           </div>
         </div>
-        <div class="contact-row">
-          <span class="c-icon">⏰</span>
+        <div class="platform-arrow">→</div>
+      </a>
+      <a href="#" class="platform-card">
+        <div class="platform-left">
+          <div class="platform-icon">🔴</div>
           <div>
-            <div class="c-label">Kitchen Hours</div>
-            <div class="c-val">Monday – Sunday<br>11:00 AM to 10:30 PM</div>
+            <div class="platform-name">Order on Zomato</div>
+            <div class="platform-sub">Rated 4.8 ★ on Zomato</div>
           </div>
+        </div>
+        <div class="platform-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-visual-block reveal">
+    <div class="about-quote-box">
+      <p class="quote-text">"Every dish we make carries the memory of a home-cooked meal. The spices, the technique, the care — it's all genuine."</p>
+      <div class="quote-attr">— TastyByte Kitchen</div>
+    </div>
+    <div class="about-tags">
+      <div class="about-tag">Bihar Authentic</div>
+      <div class="about-tag">South Indian</div>
+      <div class="about-tag">Indo-Chinese</div>
+      <div class="about-tag">Fresh Daily</div>
+      <div class="about-tag">No Preservatives</div>
+      <div class="about-tag">Made to Order</div>
+    </div>
+  </div>
+  <div class="about-content reveal">
+    <div class="section-tag">Our Story</div>
+    <h2 class="section-title" style="margin-bottom:2rem;">Cooked with<br>Intention</h2>
+    <p class="about-p">TastyByte Kitchen was born from a simple belief — that people away from home deserve food that actually tastes like home. Based in Kompally, Hyderabad, we bridge the gap between North Indian soul food and South Indian comfort dishes.</p>
+    <p class="about-p">We serve everything from Bihar's beloved Litti Chokha and rich Dal Baati to crispy Masala Dosa, fiery Chicken Schezwan Rice, and indulgent starters. Every item is prepared fresh when you order — no shortcuts.</p>
+    <div class="about-features">
+      <div class="about-feat"><span class="feat-icon">🌿</span><div><span class="feat-label">Fresh Ingredients Only</span> — sourced daily</div></div>
+      <div class="about-feat"><span class="feat-icon">🔥</span><div><span class="feat-label">Authentic Spice Blends</span> — no shortcuts</div></div>
+      <div class="about-feat"><span class="feat-icon">🛵</span><div><span class="feat-label">30-Minute Delivery</span> — hot & on time</div></div>
+      <div class="about-feat"><span class="feat-icon">📦</span><div><span class="feat-label">Made to Order</span> — never pre-cooked</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header reveal">
+    <div class="section-tag">Reach Us</div>
+    <h2 class="section-title">Contact</h2>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info-list reveal">
+      <div class="contact-row">
+        <span class="c-icon">📍</span>
+        <div>
+          <div class="c-label">Location</div>
+          <div class="c-val">TastyByte Kitchen, Kompally,<br>Hyderabad, Telangana – 500014</div>
         </div>
       </div>
-      <div class="contact-form-wrap reveal">
-        <div class="form-title">Leave a Message</div>
-        <div class="form-sub">Have a special request, feedback, or bulk order inquiry? We'll get back to you.</div>
-        <input class="f-input" type="text" placeholder="Your name">
-        <input class="f-input" type="tel" placeholder="Phone number">
-        <textarea class="f-textarea" placeholder="Your message or feedback..."></textarea>
-        <button class="btn-gold" onclick="handleFormSubmit()" style="align-self:flex-start;">Send Message</button>
+      <div class="contact-row">
+        <span class="c-icon">📞</span>
+        <div>
+          <div class="c-label">Phone & WhatsApp</div>
+          <div class="c-val">+91 80192 27970</div>
+        </div>
+      </div>
+      <div class="contact-row">
+        <span class="c-icon">📧</span>
+        <div>
+          <div class="c-label">Email</div>
+          <div class="c-val">hello@tastybytekitchen.in</div>
+        </div>
+      </div>
+      <div class="contact-row">
+        <span class="c-icon">⏰</span>
+        <div>
+          <div class="c-label">Kitchen Hours</div>
+          <div class="c-val">Monday – Sunday<br>11:00 AM to 10:30 PM</div>
+        </div>
       </div>
     </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-logo">TASTYBYTE KITCHEN</div>
-    <div class="footer-copy">© 2025 TastyByte Kitchen · Kompally, Hyderabad · All rights reserved</div>
-    <div class="footer-links">
-      <a href="#menu">Menu</a>
-      <a href="#order">Order</a>
-      <a href="#contact">Contact</a>
+    <div class="contact-form-wrap reveal">
+      <div class="form-title">Leave a Message</div>
+      <div class="form-sub">Have a special request, feedback, or bulk order inquiry? We'll get back to you.</div>
+      <input class="f-input" type="text" placeholder="Your name">
+      <input class="f-input" type="tel" placeholder="Phone number">
+      <textarea class="f-textarea" placeholder="Your message or feedback..."></textarea>
+      <button class="btn-gold" onclick="handleFormSubmit()" style="align-self:flex-start;">Send Message</button>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <script>
-    // CURSOR
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursorRing');
-    document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-      setTimeout(() => {
-        ring.style.left = e.clientX + 'px';
-        ring.style.top = e.clientY + 'px';
-      }, 80);
-    });
-    document.querySelectorAll('a, button, .menu-card, .platform-card').forEach(el => {
-      el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(1.8)'; ring.style.borderColor = 'rgba(201,168,76,0.8)'; });
-      el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = 'rgba(201,168,76,0.5)'; });
-    });
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">TASTYBYTE KITCHEN</div>
+  <div class="footer-copy">© 2025 TastyByte Kitchen · Kompally, Hyderabad · All rights reserved</div>
+  <div class="footer-links">
+    <a href="#menu">Menu</a>
+    <a href="#order">Order</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
 
-    // NAV SCROLL
-    window.addEventListener('scroll', () => {
-      document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
-    });
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  }, 80);
+});
+document.querySelectorAll('a, button, .menu-card, .platform-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(1.8)'; ring.style.borderColor = 'rgba(201,168,76,0.8)'; });
+  el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = 'rgba(201,168,76,0.5)'; });
+});
 
-    // SCROLL REVEAL
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+// NAV SCROLL
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+});
 
-    // MENU DATA
-    const menuItems = [
-      { cat: 'north', emoji: '🥘', name: 'Litti Chokha', desc: 'Authentic Bihar-style wheat balls baked to perfection, served with smoky brinjal and tomato chokha.', price: 149, type: 'veg' },
-      { cat: 'north', emoji: '🍲', name: 'Dal Baati', desc: 'Crispy baati dunked in slow-cooked dal tadka with a generous pour of ghee.', price: 179, type: 'veg' },
-      { cat: 'north', emoji: '🍛', name: 'Paneer Butter Masala', desc: 'Soft paneer cubes in a rich, velvety tomato-cashew gravy. Served with 3 butter rotis.', price: 219, type: 'veg' },
-      { cat: 'north', emoji: '🍖', name: 'Mutton Curry & Rice', desc: 'Slow-cooked bone-in mutton in a deeply spiced authentic masala. Served with steamed basmati rice.', price: 299, type: 'nonveg' },
-      { cat: 'south', emoji: '🫓', name: 'Masala Dosa', desc: 'Golden crispy dosa filled with spiced potato masala. Served with sambar and two chutneys.', price: 129, type: 'veg' },
-      { cat: 'south', emoji: '🥣', name: 'Sambar Rice', desc: 'Comforting South Indian sambar poured over hot steamed rice with a side of papad.', price: 119, type: 'veg' },
-      { cat: 'south', emoji: '🍚', name: 'Curd Rice', desc: 'Soft, tangy curd rice tempered with mustard seeds and curry leaves. Cooling and satisfying.', price: 99, type: 'veg' },
-      { cat: 'south', emoji: '🍗', name: 'Chicken Chettinad', desc: 'Fiery, aromatic South Indian dry chicken curry. Pairs perfectly with steamed rice or parotta.', price: 279, type: 'nonveg' },
-      { cat: 'starter', emoji: '🧆', name: 'Paneer Tikka (6 pcs)', desc: 'Marinated paneer char-grilled to smoky perfection. Served with mint chutney and onion rings.', price: 199, type: 'veg' },
-      { cat: 'starter', emoji: '🍗', name: 'Chicken Schezwan Rice', desc: 'Wok-tossed Indo-Chinese fried rice loaded with chicken and our signature schezwan sauce.', price: 249, type: 'nonveg' },
-      { cat: 'starter', emoji: '🦴', name: 'Chicken Lollipop (6 pcs)', desc: 'Crispy battered chicken lollipops with a spicy red schezwan dipping sauce.', price: 229, type: 'nonveg' },
-      { cat: 'starter', emoji: '🥬', name: 'Veg Manchurian', desc: 'Crispy vegetable balls tossed in a bold, tangy soy-schezwan manchurian gravy.', price: 169, type: 'veg' },
-      { cat: 'fast', emoji: '🍔', name: 'Aloo Tikki Burger', desc: 'Spiced aloo tikki patty with fresh lettuce, tomato, and our special sauce in a toasted bun.', price: 89, type: 'veg' },
-      { cat: 'fast', emoji: '🌯', name: 'Chicken Kathi Roll', desc: 'Juicy marinated chicken strips with caramelised onions and chilli sauce in a soft flaky paratha.', price: 149, type: 'nonveg' },
-      { cat: 'fast', emoji: '🍟', name: 'Masala Fries', desc: 'Crispy golden fries tossed with chaat masala, red chilli, and a squeeze of fresh lime.', price: 79, type: 'veg' },
-      { cat: 'fast', emoji: '🌮', name: 'Grilled Veg Wrap', desc: 'Smoky grilled vegetables, spiced paneer, and sauces wrapped tight in a soft whole-wheat tortilla.', price: 119, type: 'veg' },
-    ];
+// SCROLL REVEAL
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    function renderMenu(items) {
-      document.getElementById('menuGrid').innerHTML = items.map(item => `
+// MENU DATA
+const menuItems = [
+  { cat:'north', emoji:'🥘', name:'Litti Chokha', desc:'Authentic Bihar-style wheat balls baked to perfection, served with smoky brinjal and tomato chokha.', price:149, type:'veg' },
+  { cat:'north', emoji:'🍲', name:'Dal Baati', desc:'Crispy baati dunked in slow-cooked dal tadka with a generous pour of ghee.', price:179, type:'veg' },
+  { cat:'north', emoji:'🍛', name:'Paneer Butter Masala', desc:'Soft paneer cubes in a rich, velvety tomato-cashew gravy. Served with 3 butter rotis.', price:219, type:'veg' },
+  { cat:'north', emoji:'🍖', name:'Mutton Curry & Rice', desc:'Slow-cooked bone-in mutton in a deeply spiced authentic masala. Served with steamed basmati rice.', price:299, type:'nonveg' },
+  { cat:'south', emoji:'🫓', name:'Masala Dosa', desc:'Golden crispy dosa filled with spiced potato masala. Served with sambar and two chutneys.', price:129, type:'veg' },
+  { cat:'south', emoji:'🥣', name:'Sambar Rice', desc:'Comforting South Indian sambar poured over hot steamed rice with a side of papad.', price:119, type:'veg' },
+  { cat:'south', emoji:'🍚', name:'Curd Rice', desc:'Soft, tangy curd rice tempered with mustard seeds and curry leaves. Cooling and satisfying.', price:99, type:'veg' },
+  { cat:'south', emoji:'🍗', name:'Chicken Chettinad', desc:'Fiery, aromatic South Indian dry chicken curry. Pairs perfectly with steamed rice or parotta.', price:279, type:'nonveg' },
+  { cat:'starter', emoji:'🧆', name:'Paneer Tikka (6 pcs)', desc:'Marinated paneer char-grilled to smoky perfection. Served with mint chutney and onion rings.', price:199, type:'veg' },
+  { cat:'starter', emoji:'🍗', name:'Chicken Schezwan Rice', desc:'Wok-tossed Indo-Chinese fried rice loaded with chicken and our signature schezwan sauce.', price:249, type:'nonveg' },
+  { cat:'starter', emoji:'🦴', name:'Chicken Lollipop (6 pcs)', desc:'Crispy battered chicken lollipops with a spicy red schezwan dipping sauce.', price:229, type:'nonveg' },
+  { cat:'starter', emoji:'🥬', name:'Veg Manchurian', desc:'Crispy vegetable balls tossed in a bold, tangy soy-schezwan manchurian gravy.', price:169, type:'veg' },
+  { cat:'fast', emoji:'🍔', name:'Aloo Tikki Burger', desc:'Spiced aloo tikki patty with fresh lettuce, tomato, and our special sauce in a toasted bun.', price:89, type:'veg' },
+  { cat:'fast', emoji:'🌯', name:'Chicken Kathi Roll', desc:'Juicy marinated chicken strips with caramelised onions and chilli sauce in a soft flaky paratha.', price:149, type:'nonveg' },
+  { cat:'fast', emoji:'🍟', name:'Masala Fries', desc:'Crispy golden fries tossed with chaat masala, red chilli, and a squeeze of fresh lime.', price:79, type:'veg' },
+  { cat:'fast', emoji:'🌮', name:'Grilled Veg Wrap', desc:'Smoky grilled vegetables, spiced paneer, and sauces wrapped tight in a soft whole-wheat tortilla.', price:119, type:'veg' },
+];
+
+function renderMenu(items) {
+  document.getElementById('menuGrid').innerHTML = items.map(item => `
     <div class="menu-card">
       <div class="card-header">
         <div class="card-emoji-wrap">${item.emoji}</div>
@@ -1647,36 +881,35 @@
       </div>
     </div>
   `).join('');
-    }
+}
 
-    function filterMenu(cat, btn) {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderMenu(cat === 'all' ? menuItems : menuItems.filter(i => i.cat === cat));
-    }
+function filterMenu(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMenu(cat === 'all' ? menuItems : menuItems.filter(i => i.cat === cat));
+}
 
-    let cartTotal = 0, cartCount = 0;
-    function addToCart(name, price) {
-      cartTotal += price;
-      cartCount++;
-      showToast(`<span class="t-gold">${name}</span> added &nbsp;·&nbsp; Cart: ₹${cartTotal} (${cartCount} items)`);
-    }
+let cartTotal = 0, cartCount = 0;
+function addToCart(name, price) {
+  cartTotal += price;
+  cartCount++;
+  showToast(`<span class="t-gold">${name}</span> added &nbsp;·&nbsp; Cart: ₹${cartTotal} (${cartCount} items)`);
+}
 
-    function showToast(msg) {
-      document.querySelectorAll('.toast').forEach(t => t.remove());
-      const t = document.createElement('div');
-      t.className = 'toast';
-      t.innerHTML = msg;
-      document.body.appendChild(t);
-      setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.4s'; setTimeout(() => t.remove(), 400); }, 3500);
-    }
+function showToast(msg) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.4s'; setTimeout(() => t.remove(), 400); }, 3500);
+}
 
-    function handleFormSubmit() {
-      showToast('<span class="t-gold">Message sent!</span> &nbsp;We\'ll call you back shortly 🙏');
-    }
+function handleFormSubmit() {
+  showToast('<span class="t-gold">Message sent!</span> &nbsp;We\'ll call you back shortly 🙏');
+}
 
-    renderMenu(menuItems);
-  </script>
+renderMenu(menuItems);
+</script>
 </body>
-
 </html>
