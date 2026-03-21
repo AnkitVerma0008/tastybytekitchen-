@@ -263,6 +263,15 @@ footer { background: var(--black); padding: 3rem 6%; display: flex; align-items:
 .modal-close-btn { width: 100%; background: var(--gold); color: var(--black); border: none; padding: 14px; font-size: 0.82rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: none; font-family: 'Outfit', sans-serif; transition: all 0.3s; }
 .modal-close-btn:hover { background: var(--gold-light); }
 
+
+/* CART CUSTOMER FIELDS */
+.cart-customer-fields { padding-bottom: 1rem; border-bottom: 1px solid rgba(201,168,76,0.08); margin-bottom: 1rem; }
+.cart-field-label { font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 0.7rem; }
+.cart-input { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.12); color: var(--white); padding: 11px 14px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; outline: none; transition: border-color 0.3s; margin-bottom: 0.6rem; border-radius: 0; }
+.cart-input:focus { border-color: rgba(201,168,76,0.4); }
+.cart-input::placeholder { color: var(--white-faint); }
+.cart-textarea { resize: none; height: 72px; }
+
 /* ANIMATIONS */
 @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -285,6 +294,8 @@ footer { background: var(--black); padding: 3rem 6%; display: flex; align-items:
   .cart-drawer { width: 100vw; }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init("Gvc_WJNOQPNXdqW3m");</script>
 </head>
 <body>
 
@@ -305,6 +316,12 @@ footer { background: var(--black); padding: 3rem 6%; display: flex; align-items:
     </div>
   </div>
   <div class="cart-footer">
+    <div class="cart-customer-fields">
+      <div class="cart-field-label">Your Details</div>
+      <input class="cart-input" id="custName" type="text" placeholder="👤 Your full name" />
+      <input class="cart-input" id="custPhone" type="tel" placeholder="📱 WhatsApp number (10 digits)" />
+      <textarea class="cart-input cart-textarea" id="custAddress" placeholder="🏠 Delivery address (area, landmark, flat no.)"></textarea>
+    </div>
     <div class="cart-total-row">
       <div class="cart-total-label">Total Amount</div>
       <div class="cart-total-amt" id="cartTotalAmt">₹0</div>
@@ -627,11 +644,19 @@ footer { background: var(--black); padding: 3rem 6%; display: flex; align-items:
     </div>
     <div class="contact-form-wrap reveal">
       <div class="form-title">Leave a Message</div>
-      <div class="form-sub">Special request, feedback, or bulk order? We'll get back to you.</div>
-      <input class="f-input" type="text" placeholder="Your name">
-      <input class="f-input" type="tel" placeholder="Phone number">
-      <textarea class="f-textarea" placeholder="Your message or feedback..."></textarea>
-      <button class="btn-gold" onclick="handleFormSubmit()" style="align-self:flex-start;">Send Message</button>
+      <div class="form-sub">Special request, feedback, or bulk order? We'll reply to your email shortly!</div>
+      <form action="https://formspree.io/f/xeerweby" method="POST" id="contactForm" onsubmit="handleFormspreeSubmit(event)">
+        <input class="f-input" type="text" name="name" placeholder="Your full name" required style="margin-bottom:0.8rem;display:block;">
+        <input class="f-input" type="email" name="email" placeholder="Your email address" required style="margin-bottom:0.8rem;display:block;">
+        <input class="f-input" type="tel" name="phone" placeholder="Phone / WhatsApp number" style="margin-bottom:0.8rem;display:block;">
+        <textarea class="f-textarea" name="message" placeholder="Your message, special request, or feedback..." required style="margin-bottom:0.8rem;display:block;width:100%;"></textarea>
+        <input type="hidden" name="_subject" value="New Message — Cravora Kitchen Website">
+        <input type="hidden" name="_replyto" value="cravora.kitchen.help@gmail.com">
+        <button type="submit" class="btn-gold" style="align-self:flex-start;">Send Message</button>
+      </form>
+      <div id="formSuccess" style="display:none; margin-top:1rem; background:rgba(39,174,96,0.08); border:1px solid rgba(39,174,96,0.2); padding:1rem; font-size:0.85rem; color:#27AE60;">
+        ✅ Message sent! We'll reply to your email within 30 minutes.
+      </div>
     </div>
   </div>
 </section>
@@ -795,12 +820,13 @@ function generateOrderId() {
 function placeOrder() {
   if (cart.length === 0) return;
 
-  // Ask customer phone number first
-  const customerPhone = prompt('📱 Please enter your WhatsApp number (10 digits) so we can confirm your order:');
-  if (!customerPhone || customerPhone.replace(/\D/g,'').length < 10) {
-    showToast('❌ Valid phone number required to place order!');
-    return;
-  }
+  const custName = document.getElementById('custName').value.trim();
+  const customerPhone = document.getElementById('custPhone').value.trim();
+  const custAddress = document.getElementById('custAddress').value.trim();
+
+  if (!custName) { showToast('❌ Please enter your name!'); document.getElementById('custName').focus(); return; }
+  if (!customerPhone || customerPhone.replace(/\D/g,'').length < 10) { showToast('❌ Valid WhatsApp number required!'); document.getElementById('custPhone').focus(); return; }
+  if (!custAddress) { showToast('❌ Please enter your delivery address!'); document.getElementById('custAddress').focus(); return; }
 
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const orderId = generateOrderId();
@@ -809,14 +835,16 @@ function placeOrder() {
   const itemsList = cart.map(i => `• ${i.name} x${i.qty} = ₹${i.price * i.qty}`).join('\n');
   const payText = selectedPayment === 'cash' ? 'Cash on Delivery' : `UPI (8019227970@superyes)`;
 
-  currentOrderDetails = { orderId, total, itemsList, payText, customerPhone: customerPhone.replace(/\D/g,'') };
+  currentOrderDetails = { orderId, total, itemsList, payText, custName, custAddress, customerPhone: customerPhone.replace(/\D/g,'') };
 
   // Admin WhatsApp message
   const adminMsg = encodeURIComponent(
 `🔔 *NEW ORDER — Cravora Kitchen*
 ━━━━━━━━━━━━━━━
 🆔 Order ID: ${orderId}
-📞 Customer: +91${customerPhone.replace(/\D/g,'')}
+👤 Name: ${custName}
+📞 Phone: +91${customerPhone.replace(/\D/g,'')}
+🏠 Address: ${custAddress}
 ━━━━━━━━━━━━━━━
 🛒 *Items:*
 ${itemsList}
@@ -833,6 +861,8 @@ ${itemsList}
 `✅ *Order Confirmed — Cravora Kitchen*
 ━━━━━━━━━━━━━━━
 🆔 Order ID: ${orderId}
+👤 Name: ${custName}
+🏠 Delivery: ${custAddress}
 🛒 *Your Items:*
 ${itemsList}
 ━━━━━━━━━━━━━━━
@@ -841,6 +871,7 @@ ${itemsList}
 ⏱️ Est. Delivery: 30 minutes
 ━━━━━━━━━━━━━━━
 📞 Queries? Call: +91 80192 27970
+📧 Email: cravora.kitchen.help@gmail.com
 ❌ To cancel, reply CANCEL ${orderId}`
   );
 
@@ -860,6 +891,9 @@ ${itemsList}
   document.getElementById('successModal').classList.add('open');
 
   cart = [];
+  document.getElementById('custName').value = '';
+  document.getElementById('custPhone').value = '';
+  document.getElementById('custAddress').value = '';
   updateCart();
   closeCart();
 }
@@ -905,7 +939,26 @@ function showToast(msg) {
   setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.4s'; setTimeout(() => t.remove(), 400); }, 3000);
 }
 
-function handleFormSubmit() { showToast('<span class="t-gold">Message sent!</span> &nbsp;We\'ll call you back shortly 🙏'); }
+function handleFormspreeSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('contactForm');
+  const data = new FormData(form);
+  fetch('https://formspree.io/f/xeerweby', {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(res => {
+    if (res.ok) {
+      form.reset();
+      document.getElementById('formSuccess').style.display = 'block';
+      showToast('<span class="t-gold">Message sent!</span> Check your email for confirmation 📧');
+    } else {
+      showToast('❌ Something went wrong. Please try again!');
+    }
+  }).catch(() => {
+    showToast('❌ Network error. Please try again!');
+  });
+}
 
 renderMenu(menuItems);
 </script>
