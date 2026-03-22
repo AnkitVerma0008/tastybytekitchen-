@@ -644,18 +644,19 @@ footer { background: var(--black); padding: 3rem 6%; display: flex; align-items:
     </div>
     <div class="contact-form-wrap reveal">
       <div class="form-title">Leave a Message</div>
-      <div class="form-sub">Special request, feedback, or bulk order? We'll reply to your email shortly!</div>
-      <form action="https://formspree.io/f/xeerweby" method="POST" id="contactForm" onsubmit="handleFormspreeSubmit(event)">
-        <input class="f-input" type="text" name="name" placeholder="Your full name" required style="margin-bottom:0.8rem;display:block;">
-        <input class="f-input" type="email" name="email" placeholder="Your email address" required style="margin-bottom:0.8rem;display:block;">
-        <input class="f-input" type="tel" name="phone" placeholder="Phone / WhatsApp number" style="margin-bottom:0.8rem;display:block;">
-        <textarea class="f-textarea" name="message" placeholder="Your message, special request, or feedback..." required style="margin-bottom:0.8rem;display:block;width:100%;"></textarea>
-        <input type="hidden" name="_subject" value="New Message — Cravora Kitchen Website">
-        <input type="hidden" name="_replyto" value="cravora.kitchen.help@gmail.com">
-        <button type="submit" class="btn-gold" style="align-self:flex-start;">Send Message</button>
-      </form>
-      <div id="formSuccess" style="display:none; margin-top:1rem; background:rgba(39,174,96,0.08); border:1px solid rgba(39,174,96,0.2); padding:1rem; font-size:0.85rem; color:#27AE60;">
-        ✅ Message sent! We'll reply to your email within 30 minutes.
+      <div class="form-sub">Special request, feedback, or bulk order? You'll receive an auto-reply instantly!</div>
+      <div style="display:flex;flex-direction:column;gap:0.8rem;">
+        <input class="f-input" id="cf_name" type="text" placeholder="Your full name">
+        <input class="f-input" id="cf_email" type="email" placeholder="Your email address">
+        <input class="f-input" id="cf_phone" type="tel" placeholder="Phone / WhatsApp number">
+        <textarea class="f-textarea" id="cf_message" placeholder="Your message, special request, or feedback..."></textarea>
+        <button class="btn-gold" id="cfSubmitBtn" onclick="sendContactEmail()" style="align-self:flex-start;">Send Message</button>
+      </div>
+      <div id="formSuccess" style="display:none;margin-top:1rem;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.2);padding:1rem;font-size:0.85rem;color:#27AE60;">
+        ✅ Message sent! Check your email — auto-reply sent!
+      </div>
+      <div id="formError" style="display:none;margin-top:1rem;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.2);padding:1rem;font-size:0.85rem;color:#e74c3c;">
+        ❌ Something went wrong. Please try again or call us directly.
       </div>
     </div>
   </div>
@@ -939,25 +940,40 @@ function showToast(msg) {
   setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.4s'; setTimeout(() => t.remove(), 400); }, 3000);
 }
 
-function handleFormspreeSubmit(e) {
-  e.preventDefault();
-  const form = document.getElementById('contactForm');
-  const data = new FormData(form);
-  fetch('https://formspree.io/f/xeerweby', {
-    method: 'POST',
-    body: data,
-    headers: { 'Accept': 'application/json' }
-  }).then(res => {
-    if (res.ok) {
-      form.reset();
-      document.getElementById('formSuccess').style.display = 'block';
-      showToast('<span class="t-gold">Message sent!</span> Check your email for confirmation 📧');
-    } else {
-      showToast('❌ Something went wrong. Please try again!');
-    }
-  }).catch(() => {
-    showToast('❌ Network error. Please try again!');
-  });
+async function sendContactEmail() {
+  const name = document.getElementById('cf_name').value.trim();
+  const email = document.getElementById('cf_email').value.trim();
+  const phone = document.getElementById('cf_phone').value.trim();
+  const message = document.getElementById('cf_message').value.trim();
+
+  if (!name) { showToast('Please enter your name!'); return; }
+  if (!email || !email.includes('@')) { showToast('Please enter a valid email!'); return; }
+  if (!message) { showToast('Please enter your message!'); return; }
+
+  const btn = document.getElementById('cfSubmitBtn');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  try {
+    await emailjs.send('service_1xfvtmb', 'template_8nkd0ko', {
+      from_name: name,
+      from_email: email,
+      phone: phone || 'Not provided',
+      message: message
+    });
+    document.getElementById('cf_name').value = '';
+    document.getElementById('cf_email').value = '';
+    document.getElementById('cf_phone').value = '';
+    document.getElementById('cf_message').value = '';
+    document.getElementById('formSuccess').style.display = 'block';
+    document.getElementById('formError').style.display = 'none';
+    showToast('Message sent! Auto-reply sent to your email!');
+    btn.textContent = 'Message Sent ✓';
+  } catch(err) {
+    document.getElementById('formError').style.display = 'block';
+    btn.textContent = 'Send Message';
+    btn.disabled = false;
+  }
 }
 
 renderMenu(menuItems);
